@@ -20,7 +20,7 @@
 - 프로젝트 업데이트 (진행 상황, 공지)
 
 reactive kafka
-- 프로젝트 업데이트 시, consumer에서 알림처리
+- 프로젝트 업데이트 시, consumer에서 알림처리, consumer 모듈 필요
 
 ### [ 후원 모듈 ]
 
@@ -46,8 +46,12 @@ reactive kafka
 
 
 ## ERD
-
+ 초기 구상 테이블 - 변경예정
+ 
+ <img src="doc/image/table model.png"/>
+ 
 ## Trouble Shooting
+
 [go to the trouble shooting section](doc/TROUBLE_SHOOTING.md)
 
 
