@@ -48,7 +48,7 @@ reactive kafka
 ## ERD
  초기 구상 테이블 - 변경예정
  
- <img src="doc/image/table model.png"/>
+ <img src="doc/image/erd_1.png"/>
  
 ## Trouble Shooting
 
