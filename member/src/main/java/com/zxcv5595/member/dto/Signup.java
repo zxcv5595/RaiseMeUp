@@ -25,6 +25,8 @@ public class Signup {
         @NotEmpty(message = "Password cannot be empty")
         @Size(min = 8, max = 20, message = "Password must be between 8 and 20 characters")
         private String password;
+
+        @NotEmpty(message = "PhoneNumber cannot be empty")
         @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "Invalid phone number ex:010-1234-1234")
         private String phone;
 
