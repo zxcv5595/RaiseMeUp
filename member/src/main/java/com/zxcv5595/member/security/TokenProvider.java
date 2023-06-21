@@ -1,6 +1,6 @@
 package com.zxcv5595.member.security;
 
-import com.zxcv5595.member.service.MemberService;
+import com.zxcv5595.member.security.userdetails.MemberDetailsServiceImpl;
 import com.zxcv5595.member.type.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -22,7 +22,7 @@ public class TokenProvider {
 
     private static final String KEY_ROLES = "roles";
     private static final long EXPIRED_TIME = 1000 * 60 * 60; // 1 hour
-    private final MemberService memberService;
+    private final MemberDetailsServiceImpl memberDetailsService;
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
@@ -44,7 +44,7 @@ public class TokenProvider {
     @Transactional
     public Authentication getAuthentication(String jwt) {
 
-        UserDetails userDetails = memberService.loadUserByUsername(getUsername(jwt));
+        UserDetails userDetails = memberDetailsService.loadUserByUsername(getUsername(jwt));
 
         return new UsernamePasswordAuthenticationToken(userDetails, "",
                 userDetails.getAuthorities());

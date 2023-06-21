@@ -7,15 +7,12 @@ import com.zxcv5595.member.repository.MemberRepository;
 import com.zxcv5595.member.type.ErrorCode;
 import com.zxcv5595.member.type.Role;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -36,12 +33,5 @@ public class MemberService implements UserDetailsService {
         memberRepository.save(member);
 
         return member.getUsername();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberRepository.findByUsername(username).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_EXIST_MEMBER)
-        );
     }
 }
