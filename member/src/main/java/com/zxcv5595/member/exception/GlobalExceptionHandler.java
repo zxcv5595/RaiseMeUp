@@ -8,6 +8,8 @@ import io.jsonwebtoken.MalformedJwtException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,36 +19,48 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    private static final int VALIDATION_FAILED_STATUS = VALIDATION_FAILED.getStatus().value();
+    private static final int ACCESS_DENIED_STATUS = ACCESS_DENIED.getStatus().value();
+
     @ExceptionHandler(CustomException.class)
-    public ErrorResponse customExceptionHandler(CustomException e) {
+    public ResponseEntity<ErrorResponse> customExceptionHandler(CustomException e) {
         log.error("'{}':'{}'", e.getErrorCode(), e.getErrorCode().getMessage());
-        return new ErrorResponse(e.getErrorCode(), e.getStatus(), e.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getStatus(),
+                e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
-        return new ErrorResponse(VALIDATION_FAILED,
-                VALIDATION_FAILED.getStatus().value(), errors.toString());
+        ErrorResponse errorResponse = new ErrorResponse(VALIDATION_FAILED,
+                VALIDATION_FAILED_STATUS, errors.toString());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ErrorResponse handleAccessDeniedException(AccessDeniedException e) {
-        log.error("AccessDeniedException is occurred", e);
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException() {
+        log.error("AccessDeniedException is occurred");
 
-        return new ErrorResponse(ACCESS_DENIED
-                , ACCESS_DENIED.getStatus().value(), ACCESS_DENIED.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ACCESS_DENIED,
+                ACCESS_DENIED_STATUS, ACCESS_DENIED.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(MalformedJwtException.class)
-    public ErrorResponse handleMalformedJwtException(MalformedJwtException e) {
-        log.error("MalformedJwtException is occurred", e);
+    public ResponseEntity<ErrorResponse> handleMalformedJwtException() {
+        log.error("MalformedJwtException is occurred");
 
-        return new ErrorResponse(ACCESS_DENIED
-                , ACCESS_DENIED.getStatus().value(), ACCESS_DENIED.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ACCESS_DENIED,
+                ACCESS_DENIED_STATUS, ACCESS_DENIED.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
-
-
 }
+
