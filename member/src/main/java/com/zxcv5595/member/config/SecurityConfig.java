@@ -38,10 +38,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests.anyRequest().permitAll()
                 )
-                .formLogin((formLogin) -> {
-                    /* 권한이 필요한 요청은 해당 url로 리다이렉트 */
-                    formLogin.loginPage("/login");
-                })
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
