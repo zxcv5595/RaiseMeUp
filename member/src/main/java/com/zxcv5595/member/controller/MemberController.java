@@ -37,7 +37,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Request request) {
+    public ResponseEntity<String> login(@Valid @RequestBody Request request) {
 
         String token = memberService.login(request);
 

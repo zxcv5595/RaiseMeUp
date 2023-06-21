@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.MvcResult;
 @WebMvcTest(controllers = MemberController.class)
 @EnableMockMvc
 @Import(SecurityConfig.class)
-public class MemberControllerTest {
+public class SignupControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
