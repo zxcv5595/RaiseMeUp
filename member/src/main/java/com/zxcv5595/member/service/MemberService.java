@@ -21,9 +21,11 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * 비밀번호 암호화 역할 부여 (ROLE_USER) Member 저장
+     * 1. 비밀번호 암호화
+     * 2. 역할 부여 (ROLE_USER)
+     * 3. Member 저장
      */
-    public void signup(Signup.Request request) {
+    public String signup(Signup.Request request) {
         if (memberRepository.existsByUsername(request.getUsername())) {
             throw new CustomException(ErrorCode.ALREADY_EXIST_MEMBER);
         }
@@ -32,6 +34,8 @@ public class MemberService implements UserDetailsService {
         Member member = new Member(request.getUsername(), encodedPassword, request.getPhone(),
                 Role.ROLE_USER);
         memberRepository.save(member);
+
+        return member.getUsername();
     }
 
     @Override

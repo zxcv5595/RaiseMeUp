@@ -4,6 +4,7 @@ import com.zxcv5595.member.dto.Signup;
 import com.zxcv5595.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,10 @@ public class MemberController {
      * role 설정 (ROLE_USER)
      */
     @PostMapping("/signup")
-    public void signup(@Valid @RequestBody Signup.Request request){
+    public ResponseEntity<String> signup(@Valid @RequestBody Signup.Request request){
 
-        memberService.signup(request);
+        String username = memberService.signup(request);
+
+        return ResponseEntity.ok(username + "님 회원가입이 완료되었습니다.");
     }
 }
