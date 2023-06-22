@@ -21,14 +21,16 @@ import org.springframework.util.StringUtils;
 public class TokenProvider {
 
     private static final String KEY_ROLES = "roles";
+    private static final String KEY_MEMBER_ID = "memberId";
     private static final long EXPIRED_TIME = 1000 * 60 * 60; // 1 hour
     private final MemberDetailsServiceImpl memberDetailsService;
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    public String generateToken(String username, Role userType) {
+    public String generateToken(String username,Long memberId, Role userType) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(KEY_ROLES, userType);
+        claims.put(KEY_MEMBER_ID, memberId);
 
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() + EXPIRED_TIME);

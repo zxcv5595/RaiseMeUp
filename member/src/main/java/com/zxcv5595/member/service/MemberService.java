@@ -40,9 +40,9 @@ public class MemberService {
     }
 
     /**
-     *   1. username으로 member 존재 여부 확인하기
-     *   2. password 일치하는지 확인하기
-     *   3. 토큰 발급
+     * 1. username으로 member 존재 여부 확인하기
+     * 2. password 일치하는지 확인하기
+     * 3. 토큰 발급
      */
     public String login(Login.Request user) {
         Member member = memberRepository.findByUsername(user.getUsername())
@@ -50,7 +50,7 @@ public class MemberService {
 
         validatePassword(user.getPassword(), member.getPassword());
 
-        return tokenProvider.generateToken(member.getUsername(), member.getRole());
+        return tokenProvider.generateToken(member.getUsername(), member.getId(), member.getRole());
     }
 
     private void validatePassword(String loginPassword, String memberPassword) {

@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 public class Member extends BaseEntity {
-
     private String username;
     private String password;
 

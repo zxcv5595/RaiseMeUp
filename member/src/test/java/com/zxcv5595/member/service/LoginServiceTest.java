@@ -61,6 +61,7 @@ class LoginServiceTest {
     @DisplayName("로그인 성공")
     public void SuccessfulLogin() {
 
+        Long memberId = 1L;
 
         //given
         when(memberRepository.findByUsername(loginUser.getUsername())).thenReturn(
@@ -69,7 +70,7 @@ class LoginServiceTest {
         when(passwordEncoder.matches(loginUser.getPassword(), member.getPassword())).thenReturn(
                 true);
 
-        when(tokenProvider.generateToken(member.getUsername(), member.getRole())).thenReturn(
+        when(tokenProvider.generateToken(member.getUsername(), memberId,member.getRole())).thenReturn(
                 "testToken");
 
         //when
