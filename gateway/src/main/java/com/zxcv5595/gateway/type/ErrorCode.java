@@ -7,7 +7,7 @@ public enum ErrorCode {
     INVALID_TOKEN("Invalid Jwt token");
     private final String message;
 
-    public static String is(ErrorCode errorCode) {
+    public static String getMessage(ErrorCode errorCode) {
         return errorCode.message;
     }
 }

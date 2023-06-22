@@ -5,6 +5,7 @@ import com.zxcv5595.gateway.type.ErrorCode;
 import com.zxcv5595.gateway.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,10 @@ public class JwtVerificationFilter extends AbstractGatewayFilterFactory<Config> 
 
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
-    private final JwtUtil jwtUtil;
-
-    public JwtVerificationFilter(JwtUtil jwtUtil) {
+    @Value("${spring.jwt.secret}")
+    private String secretKey;
+    public JwtVerificationFilter() {
         super(Config.class);
-        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -30,9 +30,9 @@ public class JwtVerificationFilter extends AbstractGatewayFilterFactory<Config> 
         return (exchange, chain) -> {
             // JWT 검증 및 memberId 추출 로직 수행
             String token = resolveTokenFromRequest(exchange.getRequest());
-            if (token == null || !jwtUtil.validateToken(token)) {
+            if (token == null || !JwtUtil.validateToken(token, secretKey)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                        ErrorCode.is(ErrorCode.INVALID_TOKEN));
+                        ErrorCode.getMessage(ErrorCode.INVALID_TOKEN));
             }
 
             //토큰에서 memberId get
@@ -50,12 +50,12 @@ public class JwtVerificationFilter extends AbstractGatewayFilterFactory<Config> 
     }
 
     private Integer getMemberId(String token) {
-        Claims claims = jwtUtil.paresClaims(token);
+        Claims claims = JwtUtil.paresClaims(token, secretKey);
         Integer memberId = claims.get("memberId", Integer.class);
 
         if (memberId == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    ErrorCode.is(ErrorCode.INVALID_TOKEN));
+                    ErrorCode.getMessage(ErrorCode.INVALID_TOKEN));
         }
 
         return memberId;
