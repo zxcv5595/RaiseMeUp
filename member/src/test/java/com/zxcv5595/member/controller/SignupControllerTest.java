@@ -49,37 +49,36 @@ public class SignupControllerTest {
     @Test
     @DisplayName("회원가입 성공")
     public void testSignup_Successful() throws Exception {
-        // Given
+        //given
         Signup.Request request = new Signup.Request("username", "password", "010-1234-1234");
 
         ArgumentCaptor<Signup.Request> captor = ArgumentCaptor.forClass(Signup.Request.class);
         when(memberService.signup(captor.capture())).thenReturn(
                 request.getUsername());
-        // Then
+        //when
         mockMvc.perform(post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("username님 회원가입이 완료되었습니다."));
 
-        // Verify
+        //then
         verify(memberService, times(1)).signup(captor.capture());
     }
 
     @Test
     @DisplayName("회원가입-유효성검사")
     public void testSignup_Validation() throws Exception {
-        // Given
+        //given
         Signup.Request request = new Signup.Request("user", "pass", "1234");
 
-        // When
+        //when
         MvcResult result = mockMvc.perform(post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
-        // Then
         String jsonResponse = result.getResponse().getContentAsString();
         ErrorResponse errorResponse = objectMapper.readValue(jsonResponse, ErrorResponse.class);
 
@@ -89,6 +88,7 @@ public class SignupControllerTest {
                 "Password must be between 8 and 20 characters"
         );
 
+        //then
         assertEquals(ErrorCode.VALIDATION_FAILED, errorResponse.getErrorCode());
         for (String expectedError : expectedErrors) {
             assertTrue(errorResponse.getMessage().contains(expectedError));
@@ -100,17 +100,16 @@ public class SignupControllerTest {
     @Test
     @DisplayName("회원가입-유효성검사(공백문자)")
     public void testSignup_Validation_NotEmpty() throws Exception {
-        // Given
+        //given
         Signup.Request request = new Signup.Request("", "", "");
 
-        // When
+        //when
         MvcResult result = mockMvc.perform(post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
-        // Then
         String jsonResponse = result.getResponse().getContentAsString();
         ErrorResponse errorResponse = objectMapper.readValue(jsonResponse, ErrorResponse.class);
 
@@ -123,6 +122,7 @@ public class SignupControllerTest {
                 "Invalid phone number ex:010-1234-1234"
         );
 
+        //then
         assertEquals(ErrorCode.VALIDATION_FAILED, errorResponse.getErrorCode());
         for (String expectedError : expectedErrors) {
             assertTrue(errorResponse.getMessage().contains(expectedError));

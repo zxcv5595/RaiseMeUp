@@ -61,7 +61,7 @@ class LoginControllerTest {
 
         when(memberService.login(any(Request.class))).thenReturn(testToken);
 
-        //then
+        //when
         MvcResult result = mockMvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginUser)))
@@ -70,7 +70,7 @@ class LoginControllerTest {
 
         String responseToken = result.getResponse().getContentAsString();
 
-        //verify
+        //then
         assertEquals(testToken, responseToken);
 
     }

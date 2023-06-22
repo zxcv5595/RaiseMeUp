@@ -43,16 +43,16 @@ class SignupServiceTest {
     @Test
     @DisplayName("회원가입 성공")
     public void testSignup_Successful() {
-        // Given
+        //given
         Signup.Request request = new Signup.Request("username", "password", "phone");
 
         when(memberRepository.existsByUsername(request.getUsername())).thenReturn(false);
         when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
 
-        // When
+        //when
         memberService.signup(request);
 
-        // Then
+        //then
         verify(memberRepository, times(1)).existsByUsername(request.getUsername());
         verify(passwordEncoder, times(1)).encode(request.getPassword());
         Mockito.verify(memberRepository, times(1)).save(memberCaptor.capture());
@@ -67,14 +67,16 @@ class SignupServiceTest {
     @Test
     @DisplayName("회원가입 - 이미 존재하는 회원")
     public void testSignup_AlreadyExistMember() {
-        // Given
+        //given
         Signup.Request request = new Signup.Request("username", "password", "phone");
 
         when(memberRepository.existsByUsername(request.getUsername())).thenReturn(true);
 
-        // Act and Assert
+        //when
         CustomException exception = assertThrows(CustomException.class,
                 () -> memberService.signup(request));
+
+        //then
         assertEquals(ErrorCode.ALREADY_EXIST_MEMBER, exception.getErrorCode());
 
         verify(memberRepository, times(1)).existsByUsername("username");

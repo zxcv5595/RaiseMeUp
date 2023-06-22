@@ -88,10 +88,11 @@ class LoginServiceTest {
         when(memberRepository.findByUsername(loginUser.getUsername())).thenReturn(
                 Optional.empty());
 
-        // Act and Assert
+        //when
         CustomException exception = assertThrows(CustomException.class,
                 () -> memberService.login(loginUser));
 
+        //then
         assertEquals(ErrorCode.NOT_EXIST_MEMBER, exception.getErrorCode());
     }
 
@@ -106,10 +107,11 @@ class LoginServiceTest {
         when(passwordEncoder.matches(loginUser.getPassword(), member.getPassword())).thenReturn(
                 false);
 
-        // Act and Assert
+        // when
         CustomException exception = assertThrows(CustomException.class,
                 () -> memberService.login(loginUser));
 
+        //then
         assertEquals(ErrorCode.NOT_MATCHED_MEMBER, exception.getErrorCode());
     }
 
