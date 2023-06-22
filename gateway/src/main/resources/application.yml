@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: signup_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/signup/**
+            - Method=POST
+        - id: login_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/login/**
+            - Method=POST
+  profiles:
+    include: key
+server:
+  port: 9000
