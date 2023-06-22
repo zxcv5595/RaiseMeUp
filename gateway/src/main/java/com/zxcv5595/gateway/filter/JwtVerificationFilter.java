@@ -30,7 +30,7 @@ public class JwtVerificationFilter extends AbstractGatewayFilterFactory<Config> 
         return (exchange, chain) -> {
             // JWT 검증 및 memberId 추출 로직 수행
             String token = resolveTokenFromRequest(exchange.getRequest());
-            if (token == null || jwtUtil.validateToken(token)) {
+            if (token == null || !jwtUtil.validateToken(token)) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                         ErrorCode.is(ErrorCode.INVALID_TOKEN));
             }
