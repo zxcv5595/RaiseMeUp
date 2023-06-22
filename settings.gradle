@@ -1,1 +1,3 @@
 rootProject.name = 'RaiseMeUp'
+include 'member'
+
