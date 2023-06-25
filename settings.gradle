@@ -1,4 +1,5 @@
 rootProject.name = 'RaiseMeUp'
 include 'member'
 include 'gateway'
+include 'project'
 
