@@ -48,7 +48,7 @@ public class SignupControllerTest {
 
     @Test
     @DisplayName("회원가입 성공")
-    public void testSignup_Successful() throws Exception {
+    public void signup_Successful() throws Exception {
         //given
         Signup.Request request = new Signup.Request("username", "password", "010-1234-1234");
 
@@ -68,7 +68,7 @@ public class SignupControllerTest {
 
     @Test
     @DisplayName("회원가입-유효성검사")
-    public void testSignup_Validation() throws Exception {
+    public void signup_Validation() throws Exception {
         //given
         Signup.Request request = new Signup.Request("user", "pass", "1234");
 
@@ -99,7 +99,7 @@ public class SignupControllerTest {
 
     @Test
     @DisplayName("회원가입-유효성검사(공백문자)")
-    public void testSignup_Validation_NotEmpty() throws Exception {
+    public void signup_Validation_NotEmpty() throws Exception {
         //given
         Signup.Request request = new Signup.Request("", "", "");
 

@@ -42,7 +42,7 @@ class SignupServiceTest {
 
     @Test
     @DisplayName("회원가입 성공")
-    public void testSignup_Successful() {
+    public void signup_Successful() {
         //given
         Signup.Request request = new Signup.Request("username", "password", "phone");
 
@@ -66,7 +66,7 @@ class SignupServiceTest {
 
     @Test
     @DisplayName("회원가입 - 이미 존재하는 회원")
-    public void testSignup_AlreadyExistMember() {
+    public void signup_AlreadyExistMember() {
         //given
         Signup.Request request = new Signup.Request("username", "password", "phone");
 

@@ -1,5 +1,6 @@
 package com.zxcv5595.member.service;
 
+import static com.zxcv5595.member.type.Role.ROLE_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -10,7 +11,6 @@ import com.zxcv5595.member.exception.CustomException;
 import com.zxcv5595.member.repository.MemberRepository;
 import com.zxcv5595.member.security.TokenProvider;
 import com.zxcv5595.member.type.ErrorCode;
-import com.zxcv5595.member.type.Role;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,15 +53,13 @@ class LoginServiceTest {
                 .username("testUsername")
                 .password("dGVzdFBhc3N3b3Jk")
                 .phone("010-1234-1234")
-                .role(Role.ROLE_USER)
+                .role(ROLE_USER)
                 .build();
     }
 
     @Test
     @DisplayName("로그인 성공")
-    public void SuccessfulLogin() {
-
-        Long memberId = 1L;
+    public void login_Successful() {
 
         //given
         when(memberRepository.findByUsername(loginUser.getUsername())).thenReturn(
@@ -70,7 +68,8 @@ class LoginServiceTest {
         when(passwordEncoder.matches(loginUser.getPassword(), member.getPassword())).thenReturn(
                 true);
 
-        when(tokenProvider.generateToken(member.getUsername(), memberId,member.getRole())).thenReturn(
+        when(tokenProvider.generateToken(member.getUsername(), null,
+                member.getRole())).thenReturn(
                 "testToken");
 
         //when
@@ -82,7 +81,7 @@ class LoginServiceTest {
 
     @Test
     @DisplayName("존재하지 않은 유저")
-    public void InvalidUsername() {
+    public void login_InvalidUsername() {
 
         //given
         when(memberRepository.findByUsername(loginUser.getUsername())).thenReturn(
@@ -98,7 +97,7 @@ class LoginServiceTest {
 
     @Test
     @DisplayName("틀린 비밀번호")
-    public void InvalidPassword() {
+    public void login_InvalidPassword() {
 
         //given
         when(memberRepository.findByUsername(loginUser.getUsername())).thenReturn(
