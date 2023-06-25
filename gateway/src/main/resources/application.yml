@@ -12,6 +12,13 @@ spring:
           predicates:
             - Path=/login/**
             - Method=POST
+        - id: project_api
+          uri: http://localhost:8081
+          predicates:
+            - Path=/project/**
+          filters:
+            - RewritePath=/project/(?<path>.*), /v1/api/project/$\{path}
+            - name: JwtVerificationFilter
   profiles:
     include: key
 server:
