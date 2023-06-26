@@ -1,6 +1,8 @@
 package com.zxcv5595.project.dto;
 
 import com.zxcv5595.project.domain.Project;
+import com.zxcv5595.project.dto.validation.CustomDateRangeValidation;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -19,6 +21,7 @@ public class RegisterProject {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
+    @CustomDateRangeValidation(message = "Start date must be before end date and they must not be null")
     public static class Request {
 
         @NotEmpty(message = "Title cannot be empty")
@@ -31,11 +34,10 @@ public class RegisterProject {
         @PositiveOrZero(message = "Goal amount must be a positive or zero value")
         private Long goalAmount;
 
-        @NotNull(message = "Start date cannot be null")
+        @FutureOrPresent(message = "Start date must not be before current date")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate startDate;
 
-        @NotNull(message = "End date cannot be null")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate endDate;
 

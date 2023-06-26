@@ -15,7 +15,6 @@ import com.zxcv5595.project.dto.RegisterProject;
 import com.zxcv5595.project.service.ProjectService;
 import com.zxcv5595.project.type.ErrorCode;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -107,12 +106,11 @@ class RegisterProjectControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         ErrorResponse errorResponse = objectMapper.readValue(jsonResponse, ErrorResponse.class);
 
-        List<String> expectedErrors = Arrays.asList(
+        List<String> expectedErrors = List.of(
                 "Title cannot be empty",
                 "Description cannot be empty",
                 "Goal amount must be a positive or zero value",
-                "Start date cannot be null",
-                "End date cannot be null"
+                "Start date must be before end date and they must not be null"
         );
 
         //then
@@ -120,6 +118,38 @@ class RegisterProjectControllerTest {
         for (String expectedError : expectedErrors) {
             assertTrue(errorResponse.getMessage().contains(expectedError));
         }
+    }
+
+    @Test
+    @DisplayName("프로젝트 등록 - 시작날짜는 현재시간보다 이전일 수 없습니다.")
+    void registerProject_ValidationStartDate() throws Exception {
+        // Given
+        RegisterProject.Request invalidRequest = RegisterProject.Request.builder()
+                .title("Your Title")
+                .description("Your Description")
+                .goalAmount(1000L)
+                .startDate(LocalDate.now().minusDays(1))
+                .endDate(LocalDate.now())
+                .build();
+
+        // When
+        MvcResult result = mockMvc.perform(post("/v1/api/project/register")
+                        .header("X-memberId", memberId)
+                        .content(objectMapper.writeValueAsString(invalidRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // Then
+        String jsonResponse = result.getResponse().getContentAsString();
+        ErrorResponse errorResponse = objectMapper.readValue(jsonResponse, ErrorResponse.class);
+
+        String expectedError = "[Start date must not be before current date]";
+
+        //then
+        assertEquals(ErrorCode.VALIDATION_FAILED, errorResponse.getErrorCode());
+        assertEquals(expectedError, errorResponse.getMessage());
+
     }
 
 }
