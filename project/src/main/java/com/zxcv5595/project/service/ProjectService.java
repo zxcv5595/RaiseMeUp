@@ -3,8 +3,10 @@ package com.zxcv5595.project.service;
 import com.zxcv5595.project.domain.Project;
 import com.zxcv5595.project.dto.RegisterProject;
 import com.zxcv5595.project.dto.RegisterProject.Request;
+import com.zxcv5595.project.dto.UpdateCompletedMessage;
 import com.zxcv5595.project.dto.UpdateProject;
 import com.zxcv5595.project.exception.CustomException;
+import com.zxcv5595.project.kafka.UpdateEventAdapter;
 import com.zxcv5595.project.repository.ProjectRepository;
 import com.zxcv5595.project.type.ErrorCode;
 import com.zxcv5595.project.type.ProjectStatus;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UpdateEventAdapter updateEventAdapter;
 
     public void registerProject(
             String memberId,
@@ -42,6 +45,8 @@ public class ProjectService {
         project.setDescription(request.getDescription());
 
         projectRepository.save(project);
+
+        updateEventAdapter.send(new UpdateCompletedMessage(project.getId(),project.getTitle()));
 
     }
 
