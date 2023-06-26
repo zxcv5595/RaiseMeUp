@@ -54,7 +54,7 @@ class LoginControllerTest {
 
     @Test
     @DisplayName("로그인 성공")
-    public void successfulLogin() throws Exception {
+    public void login_Successful() throws Exception {
 
         //given
         String testToken = "testToken";

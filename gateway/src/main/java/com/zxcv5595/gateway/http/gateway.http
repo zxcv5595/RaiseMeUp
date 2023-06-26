@@ -17,3 +17,16 @@ Content-Type: application/json
   "password": "password"
 }
 
+### register poject
+POST http://localhost:9000/project/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJnYXRld2F5VGVzdCIsInJvbGVzIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjcsImlhdCI6MTY4NzcwNDc5MCwiZXhwIjoxNjg3NzA4MzkwfQ.WlwgkhysIliQfKla0anIT9-HozV4yacv71NlLkzAF9BCMnDaquK4QX7ytdF15a4Aet1iayGUvK42TOkQawjh4A
+
+{
+  "title": "Your Title",
+  "description": "Your Description",
+  "goalAmount": 1000,
+  "startDate": "2024-01-03",
+  "endDate": "2024-12-31"
+}
+

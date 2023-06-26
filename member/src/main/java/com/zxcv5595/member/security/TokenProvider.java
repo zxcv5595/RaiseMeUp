@@ -27,7 +27,7 @@ public class TokenProvider {
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    public String generateToken(String username,Long memberId, Role userType) {
+    public String generateToken(String username, Long memberId, Role userType) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put(KEY_ROLES, userType);
         claims.put(KEY_MEMBER_ID, memberId);
