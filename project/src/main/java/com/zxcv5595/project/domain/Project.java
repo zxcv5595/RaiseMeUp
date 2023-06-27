@@ -28,5 +28,7 @@ public class Project extends BaseEntity {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    private boolean failedMessage;
+
 
 }

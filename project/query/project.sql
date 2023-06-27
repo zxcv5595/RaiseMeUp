@@ -7,15 +7,7 @@ CREATE TABLE project (
                         status      VARCHAR(20)  NOT NULL,
                         start_date  DATE         NOT NULL,
                         end_date    DATE         NOT NULL,
+                        failed_message BOOLEAN NOT NULL DEFAULT false,
                         created_at  DATETIME(6)  NOT NULL,
                         updated_at  DATETIME(6)  NOT NULL
-);
-
-CREATE TABLE project_history (
-                                 id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                                 project_id BIGINT NOT NULL,
-                                 description VARCHAR(255) NOT NULL,
-                                 failed_message BOOLEAN NOT NULL DEFAULT false,
-                                 created_at  DATETIME(6)  NOT NULL,
-                                 updated_at  DATETIME(6)  NOT NULL
 );

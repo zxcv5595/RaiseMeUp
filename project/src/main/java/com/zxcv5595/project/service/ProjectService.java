@@ -1,14 +1,12 @@
 package com.zxcv5595.project.service;
 
 import com.zxcv5595.project.domain.Project;
-import com.zxcv5595.project.domain.ProjectHistory;
 import com.zxcv5595.project.dto.RegisterProject;
 import com.zxcv5595.project.dto.RegisterProject.Request;
 import com.zxcv5595.project.dto.UpdateCompletedMessage;
 import com.zxcv5595.project.dto.UpdateProject;
 import com.zxcv5595.project.exception.CustomException;
 import com.zxcv5595.project.kafka.UpdateEventAdapter;
-import com.zxcv5595.project.repository.ProjectHistoryRepository;
 import com.zxcv5595.project.repository.ProjectRepository;
 import com.zxcv5595.project.type.ErrorCode;
 import com.zxcv5595.project.type.ProjectStatus;
@@ -24,7 +22,6 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final UpdateEventAdapter updateEventAdapter;
 
-    private final ProjectHistoryRepository projectHistoryRepository;
 
     public void registerProject(
             long memberId,
@@ -46,8 +43,6 @@ public class ProjectService {
 
         verifyPermission(memberId, project);
 
-        saveProjectHistory(project);
-
         project.setDescription(request.getDescription());
 
         projectRepository.save(project);
@@ -62,22 +57,8 @@ public class ProjectService {
     }
 
     private void processFailedMessages(Project project) {
-        ProjectHistory projectHistory = projectHistoryRepository.findByProjectId(project)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_HISTORY));
-        projectHistory.setFailedMessage(true);
+        project.setFailedMessage(true);
         projectRepository.save(project);
-    }
-
-    private void saveProjectHistory(Project project) {
-        ProjectHistory projectHistory = projectHistoryRepository.findByProjectId(project)
-                .orElseGet(() -> projectHistoryRepository.save(ProjectHistory.builder()
-                        .projectId(project)
-                        .description(project.getDescription())
-                        .build()));
-
-        projectHistory.setDescription(project.getDescription());
-
-        projectHistoryRepository.save(projectHistory);
     }
 
 
