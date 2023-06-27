@@ -22,7 +22,7 @@ public class ProjectController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerProject(
-            @RequestHeader(MEMBER_ID_HEADER) String memberId,
+            @RequestHeader(MEMBER_ID_HEADER) long memberId,
             @Valid @RequestBody RegisterProject.Request request) {
         projectService.registerProject(memberId, request);
 
@@ -32,7 +32,7 @@ public class ProjectController {
 
     @PostMapping("/update")
     public ResponseEntity<String> updateProject(
-            @RequestHeader(MEMBER_ID_HEADER) String memberId,
+            @RequestHeader(MEMBER_ID_HEADER) long memberId,
             @Valid @RequestBody UpdateProject.Request request
     ) {
         projectService.updateProject(memberId, request);

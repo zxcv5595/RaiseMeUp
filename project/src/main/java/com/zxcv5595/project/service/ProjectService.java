@@ -1,40 +1,44 @@
 package com.zxcv5595.project.service;
 
 import com.zxcv5595.project.domain.Project;
+import com.zxcv5595.project.domain.ProjectHistory;
 import com.zxcv5595.project.dto.RegisterProject;
 import com.zxcv5595.project.dto.RegisterProject.Request;
 import com.zxcv5595.project.dto.UpdateCompletedMessage;
 import com.zxcv5595.project.dto.UpdateProject;
 import com.zxcv5595.project.exception.CustomException;
 import com.zxcv5595.project.kafka.UpdateEventAdapter;
+import com.zxcv5595.project.repository.ProjectHistoryRepository;
 import com.zxcv5595.project.repository.ProjectRepository;
 import com.zxcv5595.project.type.ErrorCode;
 import com.zxcv5595.project.type.ProjectStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UpdateEventAdapter updateEventAdapter;
 
+    private final ProjectHistoryRepository projectHistoryRepository;
+
     public void registerProject(
-            String memberId,
+            long memberId,
             RegisterProject.Request request) {
 
-        Long memberIdAsLong = Long.parseLong(memberId);
-
         Project newProject = Request.toEntity(request);
-        newProject.setMemberId(memberIdAsLong);
+        newProject.setMemberId(memberId);
         newProject.setStatus(ProjectStatus.PROGRESS);
 
         projectRepository.save(newProject);
     }
 
     public void updateProject(
-            String memberId,
+            long memberId,
             UpdateProject.Request request
     ) {
         Project project = projectRepository.findById(request.getProjectId())
@@ -42,16 +46,43 @@ public class ProjectService {
 
         verifyPermission(memberId, project);
 
+        saveProjectHistory(project);
+
         project.setDescription(request.getDescription());
 
         projectRepository.save(project);
 
-        updateEventAdapter.send(new UpdateCompletedMessage(project.getId(),project.getTitle()));
+        updateEventAdapter.send(new UpdateCompletedMessage(project.getId(), project.getTitle()))
+                .doOnError(ex -> {
+                    log.error("Error sending OrderCompletedMessage: {}", ex.getMessage(), ex);
+                    processFailedMessages(project); // 에러 발생 시 processFailedMessages 호출
+                })
+                .subscribe();
 
     }
 
-    private void verifyPermission(String memberId, Project project) {
-        if(project.getMemberId() != Long.parseLong(memberId)){
+    private void processFailedMessages(Project project) {
+        ProjectHistory projectHistory = projectHistoryRepository.findByProjectId(project)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_HISTORY));
+        projectHistory.setFailedMessage(true);
+        projectRepository.save(project);
+    }
+
+    private void saveProjectHistory(Project project) {
+        ProjectHistory projectHistory = projectHistoryRepository.findByProjectId(project)
+                .orElseGet(() -> projectHistoryRepository.save(ProjectHistory.builder()
+                        .projectId(project)
+                        .description(project.getDescription())
+                        .build()));
+
+        projectHistory.setDescription(project.getDescription());
+
+        projectHistoryRepository.save(projectHistory);
+    }
+
+
+    private void verifyPermission(long memberId, Project project) {
+        if (project.getMemberId() != memberId) {
             throw new CustomException(ErrorCode.INVALID_PERMISSION);
         }
     }
