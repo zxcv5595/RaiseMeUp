@@ -10,3 +10,12 @@ CREATE TABLE project (
                         created_at  DATETIME(6)  NOT NULL,
                         updated_at  DATETIME(6)  NOT NULL
 );
+
+CREATE TABLE failed_message
+(
+                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                         project_id BIGINT NOT NULL,
+                         failure BOOLEAN NOT NULL DEFAULT false,
+                         created_at  DATETIME(6)  NOT NULL,
+                         updated_at  DATETIME(6)  NOT NULL
+);

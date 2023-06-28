@@ -25,7 +25,7 @@ class RegisterProjectServiceTest {
     private ProjectService projectService;
 
     private RegisterProject.Request request;
-    private String memberId;
+    private long memberId;
 
     @BeforeEach
     public void setup() {
@@ -34,7 +34,7 @@ class RegisterProjectServiceTest {
                 .description("Your Description")
                 .goalAmount(1000L)
                 .build();
-        memberId = "1";
+        memberId = 1L;
     }
 
     @Test

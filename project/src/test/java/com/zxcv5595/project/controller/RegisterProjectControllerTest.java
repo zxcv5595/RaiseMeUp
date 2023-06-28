@@ -39,7 +39,7 @@ class RegisterProjectControllerTest {
     private ProjectService projectService;
 
     private RegisterProject.Request request;
-    private String memberId;
+    private long memberId;
 
     @BeforeEach
     public void setup() {
@@ -51,7 +51,7 @@ class RegisterProjectControllerTest {
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(1))
                 .build();
-        memberId = "1";
+        memberId = 1L;
     }
 
     @Test
@@ -59,7 +59,7 @@ class RegisterProjectControllerTest {
     void registerProject_Successful() throws Exception {
 
         //given
-        ArgumentCaptor<String> memberIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Long> memberIdCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<RegisterProject.Request> requestCaptor = ArgumentCaptor.forClass(
                 RegisterProject.Request.class);
 
