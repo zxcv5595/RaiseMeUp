@@ -1,7 +1,8 @@
 package com.zxcv5595.project.batch;
 
+import com.zxcv5595.project.domain.FailedMessage;
 import com.zxcv5595.project.domain.Project;
-import com.zxcv5595.project.repository.ProjectRepository;
+import com.zxcv5595.project.repository.FailedMessageRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,34 +14,40 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ProjectReader implements ItemReader<List<Project>> {
 
-    private final ProjectRepository projectRepository;
-    private boolean hasMoreProjects = true;
+    private final FailedMessageRepository failedMessageRepository;
+    private boolean executed = false;
 
     @Override
     public List<Project> read() {
-        if (!hasMoreProjects) {
-            return null; // 프로젝트가 더 이상 없을 경우 null을 반환하여 배치 작업 종료
+        if (executed) {
+            return null; // 이미 실행되었으므로 중지
         }
 
-        log.info("Start reading projects from project history");
+        log.info("Start reading projects from failed_message table");
 
-        List<Project> projects = projectRepository.findByFailedMessage(true);
+        List<FailedMessage> failedMessageList = failedMessageRepository.findByFailure(true);
 
-        for (Project projectHistory : projects) {
-            projectHistory.setFailedMessage(false);
+        if (failedMessageList.isEmpty()) {
+            setExecuted(true);
+            return null;
         }
-        projectRepository.saveAll(projects);
 
-        log.info("Finished processing project history. Retrieved {} project histories",
-                projects.size());
+        for (FailedMessage failedMessage : failedMessageList) {
+            failedMessage.setFailure(false);
+        }
+        failedMessageRepository.saveAll(failedMessageList);
 
-        setHasMoreProjects(false); // 더 이상 프로젝트가 없음을 표시
+        log.info("Finished processing failed message. Retrieved {} failed messages",
+                failedMessageList.size());
 
-        return projects;
+        setExecuted(true);
+
+        return failedMessageList.stream().map(FailedMessage::getProjectId)
+                .toList();
     }
 
-    public void setHasMoreProjects(boolean hasMoreProjects) {
-        this.hasMoreProjects = hasMoreProjects;
+    public void setExecuted(boolean executed) {
+        this.executed = executed;
     }
 }
 

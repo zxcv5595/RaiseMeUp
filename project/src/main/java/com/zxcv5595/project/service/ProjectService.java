@@ -1,5 +1,6 @@
 package com.zxcv5595.project.service;
 
+import com.zxcv5595.project.domain.FailedMessage;
 import com.zxcv5595.project.domain.Project;
 import com.zxcv5595.project.dto.RegisterProject;
 import com.zxcv5595.project.dto.RegisterProject.Request;
@@ -7,6 +8,7 @@ import com.zxcv5595.project.dto.UpdateCompletedMessage;
 import com.zxcv5595.project.dto.UpdateProject;
 import com.zxcv5595.project.exception.CustomException;
 import com.zxcv5595.project.kafka.UpdateEventAdapter;
+import com.zxcv5595.project.repository.FailedMessageRepository;
 import com.zxcv5595.project.repository.ProjectRepository;
 import com.zxcv5595.project.type.ErrorCode;
 import com.zxcv5595.project.type.ProjectStatus;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final FailedMessageRepository failedMessageRepository;
     private final UpdateEventAdapter updateEventAdapter;
 
 
@@ -57,8 +60,13 @@ public class ProjectService {
     }
 
     private void processFailedMessages(Project project) {
-        project.setFailedMessage(true);
-        projectRepository.save(project);
+
+        FailedMessage failedMessage = failedMessageRepository.findByProjectId(project)
+                .orElseGet(() -> failedMessageRepository.save(new FailedMessage(project, true)));
+
+        failedMessage.setFailure(true);
+
+        failedMessageRepository.save(failedMessage);
     }
 
 
