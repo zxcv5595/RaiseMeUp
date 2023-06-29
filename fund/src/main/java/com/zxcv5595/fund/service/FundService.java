@@ -1,17 +1,18 @@
 package com.zxcv5595.fund.service;
 
 import com.zxcv5595.fund.domain.Fund;
-import com.zxcv5595.fund.repository.projection.project.ProjectionEndDate;
 import com.zxcv5595.fund.dto.FundToProject;
 import com.zxcv5595.fund.dto.FundToProject.Request;
-import com.zxcv5595.fund.repository.projection.project.ProjectionMemberId;
 import com.zxcv5595.fund.exception.CustomException;
 import com.zxcv5595.fund.repository.FundRepository;
 import com.zxcv5595.fund.repository.ProjectReadOnlyRepository;
+import com.zxcv5595.fund.repository.projection.project.ProjectionEndDate;
+import com.zxcv5595.fund.repository.projection.project.ProjectionMemberId;
 import com.zxcv5595.fund.type.ErrorCode;
 import com.zxcv5595.fund.type.FundStatus;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,8 @@ public class FundService {
     private void validatePermission(long memberId, Request request) {
 
         //프로젝트 작성자, 자신은 스스로 후원할 수 없습니다.
-        ProjectionMemberId writer = projectReadOnlyRepository.findById(request.getProjectId(), ProjectionMemberId.class)
+        ProjectionMemberId writer = projectReadOnlyRepository.findById(request.getProjectId(),
+                        ProjectionMemberId.class)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PROJECT));
 
         Long writerId = writer.getMemberId();
@@ -75,8 +77,11 @@ public class FundService {
                             request.getProjectId(), ProjectionEndDate.class)
                     .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PROJECT));
 
-            Duration expired = Duration.between(LocalDateTime.now(),
-                    projectionEndDate.getEndDate().plusDays(2).atStartOfDay());
+            LocalDate currentDate = LocalDate.now();
+            LocalDate endDate = projectionEndDate.getEndDate().plusDays(2);
+            long daysUntilExpiration = ChronoUnit.DAYS.between(currentDate, endDate);
+
+            Duration expired = Duration.ofDays(daysUntilExpiration);
             valueOps.set(key, accumulatedAmount, expired);
         }
 
