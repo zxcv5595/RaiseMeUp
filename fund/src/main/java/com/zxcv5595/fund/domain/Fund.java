@@ -1,5 +1,6 @@
 package com.zxcv5595.fund.domain;
 
+import com.zxcv5595.common.domain.BaseEntity;
 import com.zxcv5595.fund.type.FundStatus;
 import com.zxcv5595.fund.type.PaymentStatus;
 import jakarta.persistence.Entity;

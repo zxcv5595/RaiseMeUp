@@ -1,5 +1,6 @@
 package com.zxcv5595.fund.domain;
 
+import com.zxcv5595.common.domain.BaseEntity;
 import jakarta.persistence.Entity;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

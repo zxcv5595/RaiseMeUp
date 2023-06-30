@@ -1,5 +1,6 @@
 package com.zxcv5595.project.domain;
 
+import com.zxcv5595.common.domain.BaseEntity;
 import com.zxcv5595.project.type.ProjectStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

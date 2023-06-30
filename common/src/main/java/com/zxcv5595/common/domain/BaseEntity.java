@@ -1,4 +1,4 @@
-package com.zxcv5595.project.domain;
+package com.zxcv5595.common.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;

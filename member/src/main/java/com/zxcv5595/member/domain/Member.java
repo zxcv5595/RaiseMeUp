@@ -1,5 +1,6 @@
 package com.zxcv5595.member.domain;
 
+import com.zxcv5595.common.domain.BaseEntity;
 import com.zxcv5595.member.type.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 public class Member extends BaseEntity {
+
     private String username;
     private String password;
 

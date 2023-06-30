@@ -3,4 +3,5 @@ include 'member'
 include 'gateway'
 include 'project'
 include 'fund'
+include 'common'
 
