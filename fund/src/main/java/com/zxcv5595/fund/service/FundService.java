@@ -6,7 +6,6 @@ import com.zxcv5595.fund.dto.FundToProject.Request;
 import com.zxcv5595.fund.exception.CustomException;
 import com.zxcv5595.fund.repository.FundRepository;
 import com.zxcv5595.fund.repository.ProjectReadOnlyRepository;
-import com.zxcv5595.fund.repository.projection.project.ProjectionEndDate;
 import com.zxcv5595.fund.repository.projection.project.ProjectionMemberId;
 import com.zxcv5595.fund.type.ErrorCode;
 import com.zxcv5595.fund.type.FundStatus;
@@ -71,14 +70,16 @@ public class FundService {
         ValueOperations<String, Long> valueOps = redisTemplate.opsForValue();
         Long accumulatedAmount = valueOps.increment(key, amount); // 값 누적 (원자적으로 처리)
 
+        // Redis에 값이 없는 경우 값, 만료기간 설정
         if (Objects.equals(accumulatedAmount, amount)) {
-            // Redis에 값이 없는 경우 초기값, 만료기간 설정
-            ProjectionEndDate projectionEndDate = projectReadOnlyRepository.findById(
-                            request.getProjectId(), ProjectionEndDate.class)
+
+            // Redis의 값을 데이터베이스의 값으로 설정합니다.
+            accumulatedAmount = fundRepository.findTotalAmountByProjectId(request.getProjectId())
                     .orElseThrow(() -> new CustomException(ErrorCode.INVALID_PROJECT));
 
+            // 만료 기간 설정
             LocalDate currentDate = LocalDate.now();
-            LocalDate endDate = projectionEndDate.getEndDate().plusDays(2);
+            LocalDate endDate = currentDate.plusDays(7);
             long daysUntilExpiration = ChronoUnit.DAYS.between(currentDate, endDate);
 
             Duration expired = Duration.ofDays(daysUntilExpiration);

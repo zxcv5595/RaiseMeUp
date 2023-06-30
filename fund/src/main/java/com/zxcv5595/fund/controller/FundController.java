@@ -1,6 +1,6 @@
 package com.zxcv5595.fund.controller;
 
-import com.zxcv5595.fund.dto.FundToProject.Request;
+import com.zxcv5595.fund.dto.FundToProject;
 import com.zxcv5595.fund.service.FundService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class FundController {
     @PostMapping("")
     public ResponseEntity<String> fundToProject(
             @RequestHeader(MEMBER_ID_HEADER) long memberId,
-            @Valid @RequestBody Request request
+            @Valid @RequestBody FundToProject.Request request
     ) {
         fundService.fundToProject(memberId, request);
 
