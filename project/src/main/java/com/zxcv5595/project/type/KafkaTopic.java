@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum KafkaTopic {
-    UPDATE("update-topic");
+    UPDATE("update-topic"),
+    FAILURE_PROJECT("failure-project-topic");
 
     private final String topic;
 }
