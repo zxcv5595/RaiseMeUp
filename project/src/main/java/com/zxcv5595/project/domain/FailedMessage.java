@@ -1,5 +1,6 @@
 package com.zxcv5595.project.domain;
 
+import com.zxcv5595.common.domain.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -22,6 +23,5 @@ public class FailedMessage extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "project_id")
     private Project projectId;
-
     boolean failure;
 }

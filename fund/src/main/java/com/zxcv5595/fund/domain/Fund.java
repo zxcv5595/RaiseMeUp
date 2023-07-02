@@ -1,7 +1,8 @@
-package com.zxcv5595.member.domain;
+package com.zxcv5595.fund.domain;
 
 import com.zxcv5595.common.domain.BaseEntity;
-import com.zxcv5595.member.type.Role;
+import com.zxcv5595.fund.type.FundStatus;
+import com.zxcv5595.fund.type.PaymentStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,21 +10,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-public class Member extends BaseEntity {
+public class Fund extends BaseEntity {
 
-    private String username;
-    private String password;
-
-    private String phone;
+    private Long memberId;
+    private Long projectId;
+    private Long amount;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private FundStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
 
 }
