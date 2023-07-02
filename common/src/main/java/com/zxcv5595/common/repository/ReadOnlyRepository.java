@@ -1,4 +1,4 @@
-package com.zxcv5595.fund.repository;
+package com.zxcv5595.common.repository;
 
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
